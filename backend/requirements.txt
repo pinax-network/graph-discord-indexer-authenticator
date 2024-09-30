@@ -1,0 +1,7 @@
+discord
+eth_account
+flask
+flask_cors
+gql
+requests
+requests_toolbelt
