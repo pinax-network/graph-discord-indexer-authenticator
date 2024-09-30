@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sign Message with Wallet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Web3.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <!-- Custom Styles -->
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #0e0e0e;
+        color: #ffffff;
+        font-family: 'Inter', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      h1 {
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+      .card {
+        background: #1a1a1a;
+        border: 1px solid #333333;
+        border-radius: 12px;
+        padding: 40px;
+        width: 400px;
+        max-width: 90%;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        text-align: center;
+      }
+      button {
+        background-color: #4a90e2;
+        border: none;
+        border-radius: 8px;
+        color: #ffffff;
+        padding: 12px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 20px;
+        width: 100%;
+      }
+      button:disabled {
+        background-color: #666666;
+        cursor: not-allowed;
+      }
+      button:hover:not(:disabled) {
+        background-color: #357abd;
+      }
+      p {
+        margin: 10px 0;
+        word-wrap: break-word;
+      }
+      .message,
+      .signature {
+        background-color: #0e0e0e;
+        border-left: 4px solid;
+        padding: 10px 15px;
+        font-family: monospace;
+        font-size: 14px;
+        color: #cccccc;
+        text-align: left;
+        word-wrap: break-word;
+        overflow-wrap: anywhere;
+      }
+      .message {
+        border-color: #4a90e2;
+      }
+      .signature {
+        border-color: #7ed321;
+        color: #7ed321;
+      }
+      .alert {
+        margin-top: 20px;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+      }
+      .alert-success {
+        background-color: #7ed321;
+        color: #0e0e0e;
+      }
+      .alert-error {
+        background-color: #d0021b;
+        color: #ffffff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Verify Your Wallet</h1>
+      <button id="connectWallet">Connect Wallet</button>
+      <p id="walletAddress"></p>
+      <button id="signMessage" disabled>Sign Message</button>
+      <div id="messageContainer"></div>
+      <div id="signatureContainer"></div>
+      <div id="alertContainer"></div>
+    </div>
+
+    <script>
+      let web3;
+      let userAccount;
+      const messageTemplate = 'Please sign this message to verify your wallet address: ';
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+
+      if (!token) {
+        console.error('Verification token is missing from the URL.');
+      }
+
+      document.getElementById('connectWallet').addEventListener('click', async () => {
+        if (typeof window.ethereum !== 'undefined') {
+          web3 = new Web3(window.ethereum);
+          try {
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            userAccount = accounts[0];
+            document.getElementById('walletAddress').innerText = `Connected wallet address:\n${userAccount}`;
+            document.getElementById('signMessage').disabled = false;
+
+            const message = messageTemplate + userAccount;
+            const messageContainer = document.createElement('div');
+            messageContainer.className = 'message';
+            messageContainer.innerText = message;
+            document.getElementById('messageContainer').appendChild(messageContainer);
+          } catch (error) {
+            console.error('User denied account access');
+          }
+        } else {
+          console.error('No Ethereum provider found. Install MetaMask');
+          alert('No Ethereum provider found. Please install MetaMask.');
+        }
+      });
+
+      document.getElementById('signMessage').addEventListener('click', async () => {
+        try {
+          const message = messageTemplate + userAccount;
+          const signature = await web3.eth.personal.sign(message, userAccount, '');
+          const signatureContainer = document.createElement('div');
+          signatureContainer.className = 'signature';
+          signatureContainer.innerText = `Signature:\n${signature}`;
+          document.getElementById('signatureContainer').appendChild(signatureContainer);
+
+          const response = await fetch('http://10.120.10.145:8001/verify', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              token: token,
+              wallet_address: userAccount,
+              signature: signature,
+            }),
+          });
+
+          const result = await response.json();
+          const alertContainer = document.getElementById('alertContainer');
+          alertContainer.innerHTML = '';
+
+          if (response.ok) {
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-success';
+            alert.innerText = 'Verification successful!';
+            alertContainer.appendChild(alert);
+          } else {
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-error';
+            alert.innerText = 'Verification failed: ' + result.error;
+            alertContainer.appendChild(alert);
+          }
+        } catch (error) {
+          console.error('Error signing message:', error);
+        }
+      });
+    </script>
+  </body>
+</html>
