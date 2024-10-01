@@ -24,9 +24,11 @@ logging.basicConfig(level=logging.DEBUG)
 load_dotenv()
 
 # Discord bot configuration
+ADDR = os.getenv('ADDR')
+PORT = os.getenv('PORT')
 TOKEN = os.getenv('TOKEN')
-GUILD_ID = os.getenv('GUILD')
-ROLE_ID = os.getenv('ROLE')
+GUILD_ID = os.getenv('GUILD_ID')
+ROLE_ID = os.getenv('ROLE_ID')
 FRONTEND_URL = os.getenv('FRONTEND_URL')
 
 SIGNING_MESSAGE = 'Please sign this message to verify your wallet address: {}'
@@ -187,7 +189,7 @@ async def on_message(message):
         await bot.process_commands(message)
 
 def run_flask():
-    app.run(debug=True, use_reloader=False, host='0.0.0.0', port=8001)
+    app.run(debug=True, use_reloader=False, host=ADDR, port=PORT)
 
 if __name__ == '__main__':
     # Fetch whitelist before starting the bot and flask

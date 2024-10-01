@@ -2,10 +2,12 @@
 
 ## Usage
 
-### Variables d'environnement
+### Environment variables
 
 | Variable        | Description                                           |
 | --------------- | ----------------------------------------------------  |
+| `ADDR`          | App's address                                         |
+| `PORT`          | App's port                                            |
 | `TOKEN`         | Discord bot token                                     |
 | `GUILD_ID`      | Discord server (guild) ID                             |
 | `ROLE_ID`       | Discord role ID                                       |
