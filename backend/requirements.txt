@@ -3,5 +3,6 @@ eth_account
 flask
 flask_cors
 gql
+python-dotenv
 requests
 requests_toolbelt

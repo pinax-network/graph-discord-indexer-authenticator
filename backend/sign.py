@@ -1,24 +1,34 @@
-import discord
-from discord.ext import commands
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import requests
-from eth_account.messages import encode_defunct
-from eth_account import Account
+import asyncio
 import logging
+import os
 import secrets
 import threading
-import asyncio
-from gql import gql, Client
+
+import discord
+import requests
+
+from discord.ext import commands
+from dotenv import load_dotenv
+from eth_account import Account
+from eth_account.messages import encode_defunct
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+from gql import Client, gql
 from gql.transport.requests import RequestsHTTPTransport
+
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
+# Load env
+load_dotenv()
+
 # Discord bot configuration
-TOKEN = 'myDiscordToken'
-GUILD_ID = 'myGuildID'
-ROLE_ID = 'roleID'
+TOKEN = os.getenv('TOKEN')
+GUILD_ID = os.getenv('GUILD')
+ROLE_ID = os.getenv('ROLE')
+FRONTEND_URL = os.getenv('FRONTEND_URL')
+
 SIGNING_MESSAGE = 'Please sign this message to verify your wallet address: {}'
 
 # GraphQL configuration
@@ -161,7 +171,7 @@ async def verify(ctx):
         user_id = ctx.author.id
         pending_verifications[token] = user_id
         
-        verification_link = f'http://10.120.10.145:8000?token={token}'  # Send the URL with the token as a query parameter
+        verification_link = f'{FRONTEND_URL}?token={token}'  # Send the URL with the token as a query parameter
         await ctx.author.send(f'To verify your wallet, please visit: {verification_link}')
         await ctx.send(f'{ctx.author.mention}, check your direct messages for the verification link.')
         logging.debug(f'Sent verification link to user: {ctx.author.name}')
