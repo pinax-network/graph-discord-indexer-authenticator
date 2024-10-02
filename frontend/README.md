@@ -1,4 +1,4 @@
-# Frontend
+# Backend
 
 ## Usage
 
@@ -6,6 +6,7 @@
 
 | Variable        | Description                                           |
 | --------------- | ----------------------------------------------------  |
-| `NGINX_PORT`    | Exposed port on the container                         |
+| `VITE_URL`          | App's address                                         |
+| `VITE_PORT`         | App's port                                            |
 
-You can configure them at runtime
+You can configure them at runtime or set their values in a `.env` file under `frontend/`

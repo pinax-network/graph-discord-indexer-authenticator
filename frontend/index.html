@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
+<head>
+    <meta charset="UTF-8">
     <title>Sign Message with Wallet</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Web3.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <!-- Custom Styles -->
     <style>
       body {
@@ -92,92 +92,19 @@
         color: #ffffff;
       }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="card">
-      <h1>Verify Your Wallet</h1>
-      <button id="connectWallet">Connect Wallet</button>
-      <p id="walletAddress"></p>
-      <button id="signMessage" disabled>Sign Message</button>
-      <div id="messageContainer"></div>
-      <div id="signatureContainer"></div>
-      <div id="alertContainer"></div>
+        <h1>Verify Your Wallet</h1>
+        <button id="connectWallet">Connect Wallet</button>
+        <p id="walletAddress"></p>
+        <button id="signMessage" disabled>Sign Message</button>
+        <div id="messageContainer"></div>
+        <div id="signatureContainer"></div>
+        <div id="alertContainer"></div>
     </div>
 
-    <script>
-      let web3;
-      let userAccount;
-      const messageTemplate = 'Please sign this message to verify your wallet address: ';
-      const urlParams = new URLSearchParams(window.location.search);
-      const token = urlParams.get('token');
-
-      if (!token) {
-        console.error('Verification token is missing from the URL.');
-      }
-
-      document.getElementById('connectWallet').addEventListener('click', async () => {
-        if (typeof window.ethereum !== 'undefined') {
-          web3 = new Web3(window.ethereum);
-          try {
-            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-            userAccount = accounts[0];
-            document.getElementById('walletAddress').innerText = `Connected wallet address:\n${userAccount}`;
-            document.getElementById('signMessage').disabled = false;
-
-            const message = messageTemplate + userAccount;
-            const messageContainer = document.createElement('div');
-            messageContainer.className = 'message';
-            messageContainer.innerText = message;
-            document.getElementById('messageContainer').appendChild(messageContainer);
-          } catch (error) {
-            console.error('User denied account access');
-          }
-        } else {
-          console.error('No Ethereum provider found. Install MetaMask');
-          alert('No Ethereum provider found. Please install MetaMask.');
-        }
-      });
-
-      document.getElementById('signMessage').addEventListener('click', async () => {
-        try {
-          const message = messageTemplate + userAccount;
-          const signature = await web3.eth.personal.sign(message, userAccount, '');
-          const signatureContainer = document.createElement('div');
-          signatureContainer.className = 'signature';
-          signatureContainer.innerText = `Signature:\n${signature}`;
-          document.getElementById('signatureContainer').appendChild(signatureContainer);
-
-          const response = await fetch('http://10.120.10.145:8001/verify', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              token: token,
-              wallet_address: userAccount,
-              signature: signature,
-            }),
-          });
-
-          const result = await response.json();
-          const alertContainer = document.getElementById('alertContainer');
-          alertContainer.innerHTML = '';
-
-          if (response.ok) {
-            const alert = document.createElement('div');
-            alert.className = 'alert alert-success';
-            alert.innerText = 'Verification successful!';
-            alertContainer.appendChild(alert);
-          } else {
-            const alert = document.createElement('div');
-            alert.className = 'alert alert-error';
-            alert.innerText = 'Verification failed: ' + result.error;
-            alertContainer.appendChild(alert);
-          }
-        } catch (error) {
-          console.error('Error signing message:', error);
-        }
-      });
-    </script>
-  </body>
+    <!-- Подключаем main.js -->
+    <script type="module" src="/main.js"></script>
+</body>
 </html>
