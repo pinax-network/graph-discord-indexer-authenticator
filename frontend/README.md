@@ -4,9 +4,9 @@
 
 ### Environment variables
 
-| Variable        | Description                                           |
-| --------------- | ----------------------------------------------------  |
-| `VITE_URL`          | App's address                                         |
-| `VITE_PORT`         | App's port                                            |
+| Variable               | Description                                          |
+| ---------------------- | ---------------------------------------------------- |
+| `BACKEND_URL`          | Backend's address (def: http://localhost)            |
+| `BACKEND_PORT`         | Backend's port (def: 8001)                           |
 
-You can configure them at runtime or set their values in a `.env` file under `frontend/`
+You can configure them at runtime

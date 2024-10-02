@@ -11,19 +11,22 @@ if (!token) {
     alert('Verification token is missing from the URL.');
 }
 
-const url = import.meta.env.VITE_URL;
+const url = (import.meta.env.VITE_URL === 'BACKEND_URL') ? 'http://localhost' : import.meta.env.VITE_URL;
 
 if (!url) {
     console.error('URL is not set. Please check your .env file.');
     alert('URL is not configured. Please contact support.');
 }
 
-const port = import.meta.env.VITE_PORT;
+const port = (import.meta.env.VITE_PORT === 'BACKEND_PORT') ? '8001' : import.meta.env.VITE_PORT;
 
 if (!port) {
   console.error('PORT is not set. Please check your .env file.');
   alert('PORT is not configured. Please contact support.');
 }
+
+console.log(url)
+console.log(port)
 
 document.getElementById('connectWallet').addEventListener('click', async () => {
     if (typeof window.ethereum !== 'undefined') {

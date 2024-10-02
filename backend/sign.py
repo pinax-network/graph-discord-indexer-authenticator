@@ -30,6 +30,7 @@ TOKEN = os.getenv('TOKEN')
 GUILD_ID = os.getenv('GUILD_ID')
 ROLE_ID = os.getenv('ROLE_ID')
 FRONTEND_URL = os.getenv('FRONTEND_URL')
+FRONTEND_PORT = os.getenv('FRONTEND_PORT')
 
 SIGNING_MESSAGE = 'Please sign this message to verify your wallet address: {}'
 
@@ -173,7 +174,7 @@ async def verify(ctx):
         user_id = ctx.author.id
         pending_verifications[token] = user_id
         
-        verification_link = f'{FRONTEND_URL}?token={token}'  # Send the URL with the token as a query parameter
+        verification_link = f'{FRONTEND_URL}:{FRONTEND_PORT}?token={token}'  # Send the URL with the token as a query parameter
         await ctx.author.send(f'To verify your wallet, please visit: {verification_link}')
         await ctx.send(f'{ctx.author.mention}, check your direct messages for the verification link.')
         logging.debug(f'Sent verification link to user: {ctx.author.name}')
