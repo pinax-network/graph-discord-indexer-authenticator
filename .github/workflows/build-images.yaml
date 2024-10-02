@@ -50,9 +50,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend
           tags: |
-            type=sha,prefix=,suffix=-{{date 'X'}}
-            type=raw,enable=${{ !startsWith(github.ref, 'refs/tags/') }},value=develop
-            type=semver,pattern={{raw}}
+            ${{ env.TAGS }}
             
       - name: Build and push frontend Docker image
         uses: docker/build-push-action@v5
