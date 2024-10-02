@@ -5,6 +5,8 @@ backend/.env
 # Env
 frontend/env
 frontend/.env
+frontend/.env.development
+frontend/.env.production
 # Logs
 frontend/logs
 frontend/*.log
