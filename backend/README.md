@@ -11,6 +11,7 @@
 | `TOKEN`         | Discord bot token                                     |
 | `GUILD_ID`      | Discord server (guild) ID                             |
 | `ROLE_ID`       | Discord role ID                                       |
-| `FRONTEND_URL`  | URL of the frontend application to send to users      |
+| `FRONTEND_URL`  | URL of the frontend application                       |
+| `FRONTEND_PORT` | PORT of the frontend application                      |
 
 You can configure them at runtime or set their values in a `.env` file under `backend/`
