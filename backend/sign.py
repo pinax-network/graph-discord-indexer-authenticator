@@ -86,6 +86,10 @@ def fetch_whitelist():
     except Exception as e:
         logging.error(f'Error fetching whitelist: {e}')
 
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "healthy"}), 200
+
 @app.route('/verify', methods=['POST'])
 def verify():
     try:
